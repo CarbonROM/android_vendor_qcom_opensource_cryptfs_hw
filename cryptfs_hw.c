@@ -288,6 +288,25 @@ int set_ice_param(int flag)
 	return ret;
 }
 #else
+int set_ice_param(int flag)
+{
+	return -1;
+}
+#endif
+
+static int cryptfs_hw_clear_key(enum cryptfs_hw_key_management_usage_type usage)
+{
+	int  qseecom_fd, ret = -1;
+	struct qseecom_ice_data_t ice_data;
+	qseecom_fd = open("/dev/qseecom", O_RDWR);
+	if (qseecom_fd < 0)
+		return ret;
+	ice_data.flag = flag;
+	ret = ioctl(qseecom_fd, QSEECOM_IOCTL_SET_ICE_INFO, &ice_data);
+	close(qseecom_fd);
+	return ret;
+}
+#else
 int set_ice_param(__unused int flag)
 {
 	return -1;
